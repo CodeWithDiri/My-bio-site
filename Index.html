@@ -1,0 +1,633 @@
+!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bio Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,650&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root{
+        --bg: #0b0d12;
+        --panel: rgba(255,255,255,.06);
+        --panel2: rgba(255,255,255,.04);
+        --border: rgba(255,255,255,.10);
+        --border2: rgba(255,255,255,.16);
+        --text: rgba(255,255,255,.92);
+        --muted: rgba(255,255,255,.64);
+        --muted2: rgba(255,255,255,.48);
+        --accent: #a3ffcc;
+        --accent2: #8bb3ff;
+        --danger: #ff6b7a;
+        --shadow: 0 24px 70px rgba(0,0,0,.55);
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(1200px 700px at 15% 20%, rgba(139,179,255,.22), transparent 55%),
+          radial-gradient(900px 600px at 80% 20%, rgba(163,255,204,.18), transparent 52%),
+          radial-gradient(900px 650px at 55% 90%, rgba(255,255,255,.06), transparent 55%),
+          linear-gradient(180deg, #07080b, var(--bg));
+        overflow-x:hidden;
+      }
+      .wrap{
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 28px 18px 34px;
+      }
+      header{
+        display:flex;
+        align-items:flex-end;
+        justify-content:space-between;
+        gap:16px;
+        margin-bottom: 18px;
+      }
+      .brand{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+      }
+      .title{
+        font-family: Fraunces, ui-serif, Georgia, serif;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+        font-size: 28px;
+        line-height: 1.1;
+      }
+      .subtitle{
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.35;
+      }
+      .pillRow{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        flex-wrap:wrap;
+      }
+      .chip{
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.03);
+        color: var(--muted);
+        padding: 8px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        user-select:none;
+      }
+      .grid{
+        display:grid;
+        grid-template-columns: 1.05fr .95fr;
+        gap: 16px;
+      }
+      @media (max-width: 980px){
+        .grid{grid-template-columns: 1fr}
+      }
+      .panel{
+        border: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        overflow:hidden;
+      }
+      .panelInner{
+        padding: 18px 18px 16px;
+      }
+      .panelHead{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(255,255,255,.03);
+      }
+      .panelHead h2{
+        margin:0;
+        font-size: 13px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 650;
+      }
+      .panelHead .small{
+        font-size: 12px;
+        color: var(--muted2);
+      }
+      .form{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      @media (max-width: 640px){
+        .form{grid-template-columns:1fr}
+      }
+      label{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+      input, textarea, select{
+        width:100%;
+        padding: 10px 11px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(0,0,0,.18);
+        color: var(--text);
+        outline:none;
+        transition: border-color .15s ease, transform .05s ease;
+      }
+      textarea{min-height: 92px; resize: vertical}
+      input:focus, textarea:focus, select:focus{border-color: rgba(163,255,204,.45)}
+      .full{grid-column: 1 / -1}
+      .tonePills{
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+        margin-top: 2px;
+      }
+      .tonePill{
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,.03);
+        color: var(--muted);
+        padding: 9px 10px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        cursor:pointer;
+        user-select:none;
+        transition: transform .08s ease, border-color .15s ease, background .15s ease, color .15s ease;
+      }
+      .tonePill:hover{transform: translateY(-1px); border-color: var(--border2)}
+      .tonePill[aria-pressed="true"]{
+        border-color: rgba(163,255,204,.55);
+        background: rgba(163,255,204,.10);
+        color: rgba(255,255,255,.92);
+      }
+      .row{
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        align-items:center;
+        justify-content:space-between;
+        margin-top: 14px;
+      }
+      .btn{
+        appearance:none;
+        border: 1px solid rgba(255,255,255,.18);
+        background: linear-gradient(180deg, rgba(163,255,204,.18), rgba(139,179,255,.10));
+        color: rgba(255,255,255,.95);
+        padding: 11px 13px;
+        border-radius: 12px;
+        font-weight: 650;
+        letter-spacing: .01em;
+        cursor:pointer;
+        transition: transform .08s ease, filter .15s ease, border-color .15s ease;
+      }
+      .btn:hover{transform: translateY(-1px); border-color: rgba(163,255,204,.45)}
+      .btn:active{transform: translateY(0px); filter:brightness(.95)}
+      .btnSecondary{
+        background: rgba(255,255,255,.04);
+        color: var(--muted);
+      }
+      .btnSecondary:hover{border-color: rgba(255,255,255,.28); color: rgba(255,255,255,.86)}
+      .hint{
+        font-size: 12px;
+        color: var(--muted2);
+        line-height: 1.35;
+        max-width: 68ch;
+      }
+      .error{
+        display:none;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,107,122,.35);
+        background: rgba(255,107,122,.09);
+        color: rgba(255,255,255,.90);
+        font-size: 12.5px;
+      }
+      .error.show{display:block}
+      .outputArea{
+        position: relative;
+        min-height: 420px;
+      }
+      .output{
+        font-family: Fraunces, ui-serif, Georgia, serif;
+        font-size: 18px;
+        line-height: 1.55;
+        letter-spacing: -0.01em;
+        margin: 0;
+        white-space: pre-wrap;
+      }
+      .mutedBox{
+        border: 1px dashed rgba(255,255,255,.16);
+        background: rgba(255,255,255,.02);
+        border-radius: 14px;
+        padding: 14px;
+      }
+      .toolbar{
+        display:flex;
+        gap:10px;
+        align-items:center;
+        justify-content:flex-end;
+        padding: 12px 18px 0;
+      }
+      .copyStatus{
+        font-size: 12px;
+        color: var(--muted2);
+        min-height: 1.2em;
+        text-align:right;
+        padding: 0 18px 14px;
+      }
+      .spinnerWrap{
+        position:absolute;
+        inset: 0;
+        display:none;
+        align-items:center;
+        justify-content:center;
+        background: rgba(11,13,18,.55);
+        backdrop-filter: blur(6px);
+      }
+      .spinnerWrap.show{display:flex}
+      .spinner{
+        width: 54px;
+        height: 54px;
+        border-radius: 999px;
+        border: 2px solid rgba(255,255,255,.18);
+        border-top-color: rgba(163,255,204,.9);
+        animation: spin 1s linear infinite;
+        box-shadow: 0 0 0 8px rgba(163,255,204,.06);
+      }
+      @keyframes spin{to{transform: rotate(360deg)}}
+      .footerNote{
+        margin-top: 14px;
+        color: var(--muted2);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+      .k{
+        display:inline-block;
+        padding: 1px 7px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,.14);
+        background: rgba(255,255,255,.03);
+        color: rgba(255,255,255,.78);
+        font-size: 11.5px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+      a{color: rgba(139,179,255,.92); text-decoration:none}
+      a:hover{text-decoration:underline}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <div class="title">Bio Generator</div>
+          <div class="subtitle">Generate a clean, platform-ready bio in 100–160 words. Editorial feel. No clichés.</div>
+        </div>
+        <div class="pillRow" aria-hidden="true">
+          <div class="chip">Vanilla JS</div>
+          <div class="chip">Single HTML</div>
+          <div class="chip">2–3 paragraphs</div>
+        </div>
+      </header>
+ 
+      <div class="grid">
+        <!-- LEFT: FORM -->
+        <section class="panel">
+          <div class="panelHead">
+            <h2>Inputs</h2>
+            <div class="small">Fields marked * are required</div>
+          </div>
+          <div class="panelInner">
+            <div id="errorBox" class="error" role="alert"></div>
+ 
+            <form id="bioForm" class="form" autocomplete="on">
+              <label>
+                Full Name *
+                <input id="fullName" name="fullName" placeholder="e.g., Jordan Lee" required />
+              </label>
+              <label>
+                Job Title / Role *
+                <input id="role" name="role" placeholder="e.g., Product Marketing Lead" required />
+              </label>
+ 
+              <label>
+                Industry / Field
+                <input id="industry" name="industry" placeholder="e.g., Fintech, Healthcare, EdTech" />
+              </label>
+ 
+              <label>
+                Skills &amp; Expertise
+                <input id="skills" name="skills" placeholder="e.g., GTM strategy, positioning, storytelling" />
+              </label>
+ 
+              <label class="full">
+                Key Achievements
+                <textarea
+                  id="achievements"
+                  name="achievements"
+                  placeholder="Add 2–5 concrete wins with numbers if you can: launches, revenue impact, audience growth, awards..."
+                ></textarea>
+              </label>
+ 
+              <label class="full">
+                Personal Touch (optional)
+                <input id="personalTouch" name="personalTouch" placeholder="e.g., Outside work: trail running, ceramics, mentoring first-gen grads" />
+              </label>
+ 
+              <label>
+                Platform
+                <select id="platform" name="platform">
+                  <option>LinkedIn</option>
+                  <option>Personal Website</option>
+                  <option>Twitter/X</option>
+                  <option>Speaker Profile</option>
+                  <option>Press Kit</option>
+                  <option>Instagram</option>
+                </select>
+              </label>
+ 
+              <label>
+                Point of View
+                <select id="pov" name="pov">
+                  <option>First Person</option>
+                  <option>Third Person</option>
+                </select>
+              </label>
+ 
+              <div class="full">
+                <label>
+                  Tone
+                  <div class="tonePills" id="tonePills" role="group" aria-label="Tone selector">
+                    <button type="button" class="tonePill" data-tone="Professional" aria-pressed="true">Professional</button>
+                    <button type="button" class="tonePill" data-tone="Conversational" aria-pressed="false">Conversational</button>
+                    <button type="button" class="tonePill" data-tone="Bold" aria-pressed="false">Bold</button>
+                    <button type="button" class="tonePill" data-tone="Creative" aria-pressed="false">Creative</button>
+                    <button type="button" class="tonePill" data-tone="Warm" aria-pressed="false">Warm</button>
+                  </div>
+                </label>
+              </div>
+ 
+              <div class="full">
+                <label>
+                  AI API (optional)
+                  <input id="apiKey" name="apiKey" placeholder="Paste an API key (stored in your browser only)" />
+                </label>
+                <div class="hint">
+                  By default, this uses an OpenAI-compatible endpoint (<span class="k">/v1/chat/completions</span>). You can change
+                  <span class="k">API_BASE_URL</span> and model in the script section. If you don’t add a key, it will show a helpful error.
+                </div>
+              </div>
+ 
+              <div class="full row">
+                <button class="btn" id="generateBtn" type="submit">Generate Bio</button>
+                <button class="btn btnSecondary" id="demoBtn" type="button">Try with Demo Data</button>
+              </div>
+ 
+              <div class="full footerNote">
+                Tip: Use numbers (e.g., “grew to 120k subscribers”) and specifics (teams, products, geographies) for a stronger bio.
+              </div>
+            </form>
+          </div>
+        </section>
+ 
+        <!-- RIGHT: OUTPUT -->
+        <section class="panel">
+          <div class="panelHead">
+            <h2>Bio</h2>
+            <div class="small">Copy-ready output only</div>
+          </div>
+ 
+          <div class="toolbar">
+            <button class="btn btnSecondary" id="copyBtn" type="button" disabled>Copy</button>
+          </div>
+          <div class="copyStatus" id="copyStatus"></div>
+ 
+          <div class="panelInner outputArea">
+            <div class="mutedBox">
+              <p class="output" id="outputText">
+                Fill in the form and click “Generate Bio”. Your bio will appear here.
+              </p>
+            </div>
+ 
+            <div class="spinnerWrap" id="spinner" aria-live="polite" aria-busy="true">
+              <div>
+                <div class="spinner" aria-hidden="true"></div>
+                <div style="margin-top:12px;color:var(--muted);font-size:12.5px;text-align:center;">
+                  Generating…
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+ 
+    <script>
+      // ========= Configuration (edit as needed) =========
+      // OpenAI-compatible Chat Completions endpoint
+      const API_BASE_URL = "https://api.openai.com/v1";
+      const MODEL = "gpt-4.1-mini"; // change to your preferred model
+      // ==================================================
+ 
+      const $ = (id) => document.getElementById(id);
+      const form = $("bioForm");
+      const errorBox = $("errorBox");
+      const spinner = $("spinner");
+      const outputText = $("outputText");
+      const copyBtn = $("copyBtn");
+      const copyStatus = $("copyStatus");
+      const apiKeyInput = $("apiKey");
+ 
+      // Persist API key locally (browser only)
+      const API_KEY_STORAGE = "bio_generator_api_key";
+      apiKeyInput.value = localStorage.getItem(API_KEY_STORAGE) || "";
+      apiKeyInput.addEventListener("input", () => {
+        localStorage.setItem(API_KEY_STORAGE, apiKeyInput.value.trim());
+      });
+ 
+      let selectedTone = "Professional";
+      const toneButtons = Array.from(document.querySelectorAll(".tonePill"));
+      toneButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedTone = btn.dataset.tone;
+          toneButtons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+        });
+      });
+ 
+      $("demoBtn").addEventListener("click", () => {
+        $("fullName").value = "Jordan Lee";
+        $("role").value = "Product Marketing Lead";
+        $("industry").value = "B2B SaaS";
+        $("skills").value = "positioning, narrative strategy, product launches, lifecycle messaging";
+        $("achievements").value =
+          "Led global launch of a workflow platform used by 2,500+ teams; improved activation by 18% through onboarding rewrite; built partner GTM with three integrations that drove $3.2M pipeline.";
+        $("personalTouch").value = "Mentors early-career marketers and collects street photography zines.";
+        $("platform").value = "LinkedIn";
+        $("pov").value = "Third Person";
+        const conversational = toneButtons.find((b) => b.dataset.tone === "Conversational");
+        if (conversational) conversational.click();
+      });
+ 
+      function showError(message) {
+        errorBox.textContent = message;
+        errorBox.classList.add("show");
+      }
+      function clearError() {
+        errorBox.textContent = "";
+        errorBox.classList.remove("show");
+      }
+      function setLoading(isLoading) {
+        spinner.classList.toggle("show", isLoading);
+        $("generateBtn").disabled = isLoading;
+        $("demoBtn").disabled = isLoading;
+        copyBtn.disabled = isLoading || !getCleanOutput();
+      }
+ 
+      function getCleanOutput() {
+        const txt = (outputText.textContent || "").trim();
+        if (!txt) return "";
+        if (txt.includes("Fill in the form")) return "";
+        return txt;
+      }
+ 
+      copyBtn.addEventListener("click", async () => {
+        const txt = getCleanOutput();
+        if (!txt) return;
+        try {
+          await navigator.clipboard.writeText(txt);
+          copyStatus.textContent = "Copied to clipboard.";
+          setTimeout(() => (copyStatus.textContent = ""), 1600);
+        } catch (e) {
+          copyStatus.textContent = "Copy failed. Select the text and copy manually.";
+        }
+      });
+ 
+      function buildPrompt(payload) {
+        // The system rules enforce structure + style constraints.
+        const system = [
+          "You are an expert editorial bio writer.",
+          "Write a bio that sounds human, specific, and confident.",
+          "Output ONLY the bio text. No headings, labels, bullet points, or quotes.",
+          "Length: 100–160 words total.",
+          "Format: 2–3 short paragraphs.",
+          `Match the platform style: ${payload.platform}.`,
+          `Match the tone: ${payload.tone}.`,
+          `Use ${payload.pov.toLowerCase()} point of view.`,
+          "Avoid clichés and banned words/phrases: passionate, guru, ninja, rockstar, thought leader, game-changer.",
+          "Avoid filler and vague claims. Prefer concrete details, outcomes, and specificity.",
+          "If achievements are missing, infer plausible scope carefully without inventing specific numbers or employers.",
+          "If personal touch is provided, include it subtly (one short clause or sentence)."
+        ].join("\n");
+ 
+        const user = [
+          "Bio inputs:",
+          `Full Name: ${payload.fullName}`,
+          `Job Title / Role: ${payload.role}`,
+          `Industry / Field: ${payload.industry || "(not provided)"}`,
+          `Skills & Expertise: ${payload.skills || "(not provided)"}`,
+          `Key Achievements: ${payload.achievements || "(not provided)"}`,
+          `Personal Touch: ${payload.personalTouch || "(not provided)"}`,
+        ].join("\n");
+ 
+        return { system, user };
+      }
+ 
+      async function callChatCompletions({ apiKey, system, user }) {
+        const url = `${API_BASE_URL}/chat/completions`;
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: MODEL,
+            temperature: 0.7,
+            messages: [
+              { role: "system", content: system },
+              { role: "user", content: user }
+            ],
+          }),
+        });
+ 
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          throw new Error(`API error (${res.status}). ${text ? "Details: " + text : ""}`.trim());
+        }
+        const data = await res.json();
+        const content = data?.choices?.[0]?.message?.content;
+        if (!content || typeof content !== "string") {
+          throw new Error("No text returned by the API.");
+        }
+        return content.trim();
+      }
+ 
+      function validate(payload) {
+        if (!payload.fullName.trim()) return "Please enter a full name.";
+        if (!payload.role.trim()) return "Please enter a job title / role.";
+        return "";
+      }
+ 
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearError();
+        copyStatus.textContent = "";
+ 
+        const payload = {
+          fullName: $("fullName").value || "",
+          role: $("role").value || "",
+          industry: $("industry").value || "",
+          achievements: $("achievements").value || "",
+          skills: $("skills").value || "",
+          personalTouch: $("personalTouch").value || "",
+          platform: $("platform").value,
+          pov: $("pov").value,
+          tone: selectedTone,
+        };
+ 
+        const err = validate(payload);
+        if (err) {
+          showError(err);
+          return;
+        }
+ 
+        const apiKey = (apiKeyInput.value || "").trim();
+        if (!apiKey) {
+          showError("Add an API key to generate a bio (or edit the code to point to your own backend).");
+          return;
+        }
+ 
+        setLoading(true);
+        outputText.textContent = "";
+        outputText.parentElement.classList.remove("mutedBox"); // will be re-added later
+        outputText.parentElement.classList.add("mutedBox");
+ 
+        try {
+          const { system, user } = buildPrompt(payload);
+          const bio = await callChatCompletions({ apiKey, system, user });
+          // Enforce "output only the bio text": basic cleanup (no labels/headings).
+          outputText.textContent = bio.replace(/^\s*(bio:|about:)\s*/i, "").trim();
+          copyBtn.disabled = !getCleanOutput();
+        } catch (ex) {
+          showError(ex.message || "Something went wrong generating your bio.");
+          outputText.textContent =
+            "Generation failed. Check your API key / endpoint settings and try again.";
+          copyBtn.disabled = true;
+        } finally {
+          setLoading(false);
+        }
+      });
+    <\/script>
+  </body>
+</html>
